@@ -1,13 +1,18 @@
 import { tweetsData } from "./data.js";
+import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
+
+
 
 console.log(tweetsData);
 
 const tweetInput = document.getElementById("tweet-input");
-const tweetBtn = document.getElementById("tweet-btn");
 
-tweetBtn.addEventListener("click", function () {
-  // console.log(tweetInput.value);
-});
+//<--- No longer needed but kept for reference --->
+// const tweetBtn = document.getElementById("tweet-btn");
+// tweetBtn.addEventListener("click", function (e) {
+//   console.log(tweetInput.value);
+//   console.log(e.target)
+// });
 
 document.addEventListener("click", function (e) {
   // console.log(e.target.dataset.like);
@@ -15,6 +20,11 @@ document.addEventListener("click", function (e) {
     handleLikeClick(e.target.dataset.like);
   } else if (e.target.dataset.retweet) {
     handleRetweetClick(e.target.dataset.retweet);
+  } else if (e.target.dataset.reply) {
+    handleReplyClick(e.target.dataset.reply);
+    console.log(e.target.dataset.reply);
+  } else if (e.target.id === 'tweet-btn'){
+    handleTweetBtnClick()
   }
 });
 
@@ -52,6 +62,14 @@ function handleRetweetClick(tweetId) {
   }
   targetTweetObj.isRetweeted = !targetTweetObj.isRetweeted;
   render();
+}
+
+function handleReplyClick(replyId) {
+  document.getElementById(`replies-${replyId}`).classList.toggle("hidden");
+}
+
+function handleTweetBtnClick(){
+  console.log(tweetInput.value);
 }
 
 function getFeedHtml() {
@@ -107,7 +125,7 @@ function getFeedHtml() {
         </div>   
     </div>            
 </div>
-<div id="replies-${tweet.uuid}">
+<div id="replies-${tweet.uuid}" class="hidden">
 ${repliesHtml}
 </div>   
 </div>`;
