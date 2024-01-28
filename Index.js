@@ -1,21 +1,10 @@
 import { tweetsData } from "./data.js";
-import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
+import { v4 as uuidv4 } from "https://jspm.dev/uuid";
+// call it to use it - uuidv4()
 
-
-
-console.log(tweetsData);
-
-const tweetInput = document.getElementById("tweet-input");
-
-//<--- No longer needed but kept for reference --->
-// const tweetBtn = document.getElementById("tweet-btn");
-// tweetBtn.addEventListener("click", function (e) {
-//   console.log(tweetInput.value);
-//   console.log(e.target)
-// });
 
 document.addEventListener("click", function (e) {
-  // console.log(e.target.dataset.like);
+  // using event properties to find out if something exists
   if (e.target.dataset.like) {
     handleLikeClick(e.target.dataset.like);
   } else if (e.target.dataset.retweet) {
@@ -23,12 +12,14 @@ document.addEventListener("click", function (e) {
   } else if (e.target.dataset.reply) {
     handleReplyClick(e.target.dataset.reply);
     console.log(e.target.dataset.reply);
-  } else if (e.target.id === 'tweet-btn'){
-    handleTweetBtnClick()
+  } else if (e.target.id === "tweet-btn") {
+    handleTweetBtnClick();
   }
 });
 
 function handleLikeClick(tweetId) {
+  //array.filter(function(singluarVariable))
+  //to only return objects that satisfy the condition
   let targetTweetObj = tweetsData.filter(function (tweet) {
     return tweet.uuid === tweetId;
   })[0];
@@ -50,6 +41,7 @@ function handleLikeClick(tweetId) {
 
 function handleRetweetClick(tweetId) {
   console.log(tweetId);
+  // array.filter(function(singularVariable))
   let targetTweetObj = tweetsData.filter(function (tweet) {
     return tweet.uuid === tweetId;
   })[0];
@@ -65,15 +57,36 @@ function handleRetweetClick(tweetId) {
 }
 
 function handleReplyClick(replyId) {
+  //adding classes to existing classes using classList
   document.getElementById(`replies-${replyId}`).classList.toggle("hidden");
 }
 
-function handleTweetBtnClick(){
-  console.log(tweetInput.value);
+function handleTweetBtnClick() {
+  const tweetInput = document.getElementById("tweet-input");
+
+  if (tweetInput.value) {
+    const newTweetObj = {
+      handle: `@Scrimba 🌝`,
+      profilePic: `images/scrimbalogo.png`,
+      likes: 0,
+      retweets: 0,
+      tweetText: tweetInput.value,
+      replies: [],
+      isLiked: false,
+      isRetweeted: false,
+      uuid: uuidv4(),
+    };
+    //array.unshift to add object at the start of the array
+    tweetsData.unshift(newTweetObj);
+
+    render();
+    tweetInput.value = "";
+  }
 }
 
 function getFeedHtml() {
   let feedHtml = "";
+  //array.forEach(function(singularVariable))
   tweetsData.forEach(function (tweet) {
     let likeIconClass = "";
 
@@ -132,8 +145,6 @@ ${repliesHtml}
   });
   return feedHtml;
 }
-
-console.log(getFeedHtml());
 
 function render() {
   document.getElementById("feed").innerHTML = getFeedHtml();
